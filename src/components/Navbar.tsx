@@ -60,7 +60,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center gap-1 text-cyan-300 mx-auto sm:mx-0">
             <GraduationCap className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
             <span>إشراف المعلمات الفاضلات:</span>
-            <strong className="text-white font-bold">أ. مريم • أ. هيا • أ. بشاير</strong>
+            <strong className="text-white font-bold">أ. مريم • أ. هيا • أ. بشاير • أ. جواهر</strong>
           </div>
           <div className="flex items-center gap-1.5 text-emerald-300 mx-auto sm:mx-0 font-medium">
             <span className="text-slate-500 hidden sm:inline">✦</span>

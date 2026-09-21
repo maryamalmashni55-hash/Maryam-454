@@ -109,7 +109,7 @@ export const Hero: React.FC<HeroProps> = ({
             </div>
             <div>
               <span className="text-[11px] text-slate-400 block font-medium">إشراف المعلمات الفاضلات:</span>
-              <span className="text-sm sm:text-base font-black text-cyan-300">أ. مريم • أ. هيا • أ. بشاير</span>
+              <span className="text-sm sm:text-base font-black text-cyan-300">أ. مريم • أ. هيا • أ. بشاير • أ. جواهر</span>
             </div>
           </div>
 

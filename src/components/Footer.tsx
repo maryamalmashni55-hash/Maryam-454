@@ -94,7 +94,7 @@ export const Footer: React.FC = () => {
             <div>
               <span className="text-xs text-slate-400 block font-medium">إشراف وتوجيه المعلمات الفاضلات:</span>
               <h4 className="text-lg font-black text-cyan-300 mt-0.5">
-                أ. مريم • أ. هيا • أ. بشاير
+                أ. مريم • أ. هيا • أ. بشاير • أ. جواهر
               </h4>
               <p className="text-xs text-slate-400 mt-1">
                 كل الشكر والتقدير لجهودهن العظيمة في التوجيه الأكاديمي ودعم نشر الوعي الصحي.

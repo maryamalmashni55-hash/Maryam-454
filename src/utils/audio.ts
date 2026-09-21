@@ -728,104 +728,11 @@ class SoundEngine {
   }
 
   /**
-   * Distinctive physiological sound for each specific organ
+   * Distinctive physiological sound for each specific organ (Disabled per user request)
    */
-  public playOrganSound(organKey: string) {
-    if (this.isMuted) return;
-    try {
-      this.initContext();
-      if (!this.ctx) return;
-
-      const now = this.ctx.currentTime;
-
-      switch (organKey) {
-        case 'heart':
-          // Rapid high-pressure double cardiac thump + arterial systolic whoosh
-          this.triggerCardiacPulse(58, 0.1, now, 0.4);
-          this.triggerCardiacPulse(76, 0.08, now + 0.13, 0.35);
-          this.triggerCardiacPulse(60, 0.1, now + 0.5, 0.42);
-          this.triggerCardiacPulse(78, 0.08, now + 0.63, 0.36);
-
-          // Arterial whoosh (filtered noise/sawtooth)
-          const heartOsc = this.ctx.createOscillator();
-          const heartFilter = this.ctx.createBiquadFilter();
-          const heartGain = this.ctx.createGain();
-          heartOsc.type = 'sawtooth';
-          heartOsc.frequency.setValueAtTime(65, now + 0.15);
-          heartOsc.frequency.linearRampToValueAtTime(120, now + 0.35);
-          heartFilter.type = 'bandpass';
-          heartFilter.frequency.setValueAtTime(220, now);
-          heartGain.gain.setValueAtTime(0.001, now + 0.15);
-          heartGain.gain.linearRampToValueAtTime(0.08, now + 0.25);
-          heartGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
-          heartOsc.connect(heartFilter);
-          heartFilter.connect(heartGain);
-          heartGain.connect(this.ctx.destination);
-          heartOsc.start(now + 0.15);
-          heartOsc.stop(now + 0.46);
-          break;
-
-        case 'pancreas':
-          // Biochemical crystallization sound: enzymatic micro-arpeggio
-          const pNotes = [587.33, 739.99, 880, 1174.66];
-          pNotes.forEach((f, idx) => {
-            if (!this.ctx) return;
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(f, now + idx * 0.06);
-            gain.gain.setValueAtTime(0.001, now + idx * 0.06);
-            gain.gain.linearRampToValueAtTime(0.08, now + idx * 0.06 + 0.02);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.06 + 0.35);
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            osc.start(now + idx * 0.06);
-            osc.stop(now + idx * 0.06 + 0.36);
-          });
-          break;
-
-        case 'blood':
-          // Fluid flow and cellular breath: airy soft resonance (low oxygen sigh)
-          const bloodOsc = this.ctx.createOscillator();
-          const bloodGain = this.ctx.createGain();
-          const bloodFilter = this.ctx.createBiquadFilter();
-          bloodOsc.type = 'triangle';
-          bloodOsc.frequency.setValueAtTime(320, now);
-          bloodOsc.frequency.exponentialRampToValueAtTime(180, now + 0.8);
-          bloodFilter.type = 'lowpass';
-          bloodFilter.frequency.setValueAtTime(450, now);
-          bloodGain.gain.setValueAtTime(0.001, now);
-          bloodGain.gain.linearRampToValueAtTime(0.12, now + 0.2);
-          bloodGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.85);
-          bloodOsc.connect(bloodFilter);
-          bloodFilter.connect(bloodGain);
-          bloodGain.connect(this.ctx.destination);
-          bloodOsc.start(now);
-          bloodOsc.stop(now + 0.85);
-          break;
-
-        case 'digestive':
-          // Deep visceral rumble: low metabolic frequency vibration
-          const rumbleOsc = this.ctx.createOscillator();
-          const rumbleGain = this.ctx.createGain();
-          rumbleOsc.type = 'sine';
-          rumbleOsc.frequency.setValueAtTime(48, now);
-          rumbleOsc.frequency.linearRampToValueAtTime(36, now + 0.9);
-          rumbleGain.gain.setValueAtTime(0.001, now);
-          rumbleGain.gain.linearRampToValueAtTime(0.25, now + 0.2);
-          rumbleGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.95);
-          rumbleOsc.connect(rumbleGain);
-          rumbleGain.connect(this.ctx.destination);
-          rumbleOsc.start(now);
-          rumbleOsc.stop(now + 0.95);
-          break;
-
-        default:
-          this.playHeartbeatThump();
-      }
-    } catch (e) {
-      console.warn('Organ sound error:', e);
-    }
+  public playOrganSound(_organKey?: string) {
+    // Organ sound disabled per user preference
+    return;
   }
 
   /**

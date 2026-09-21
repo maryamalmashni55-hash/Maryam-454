@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { DiseaseDetail, DISEASES_DATA } from '../data/diseases';
 import { sound } from '../utils/audio';
-import { Heart, Activity, Droplets, Flame, Sparkles, ExternalLink, Info, ShieldAlert, Volume2, HelpCircle } from 'lucide-react';
+import { Heart, Activity, Droplets, Flame, Sparkles, ExternalLink, Info, ShieldAlert, HelpCircle } from 'lucide-react';
 
 interface InteractiveBodyMapProps {
   onSelectDisease: (disease: DiseaseDetail, initialTab?: 'mechanism' | 'quiz') => void;
@@ -21,7 +21,6 @@ export const InteractiveBodyMap: React.FC<InteractiveBodyMapProps> = ({
   const handleOrganClick = (disease: DiseaseDetail) => {
     sound.playClick(1500);
     sound.playHoloOpen();
-    sound.playOrganSound(disease.organKey);
     onSelectDisease(disease);
   };
 
@@ -145,19 +144,6 @@ export const InteractiveBodyMap: React.FC<InteractiveBodyMapProps> = ({
                         </p>
                       </div>
                     </div>
-
-                    {/* Organ Sound button */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        sound.playOrganSound(disease.organKey);
-                      }}
-                      title={`استمع للصوت الحيوي لـ ${disease.organName}`}
-                      className="px-2.5 py-1.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-cyan-400 text-cyan-400 hover:text-white transition-all flex items-center gap-1.5 text-xs font-medium cursor-pointer"
-                    >
-                      <Volume2 className="w-3.5 h-3.5 animate-pulse" />
-                      <span className="hidden sm:inline">صوت النبض</span>
-                    </button>
                   </div>
 
                   {/* Description */}

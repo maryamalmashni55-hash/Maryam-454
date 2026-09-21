@@ -10,6 +10,7 @@ import { CinematicMicroscope } from './components/CinematicMicroscope';
 import { CalorieMetabolismCalculator } from './components/CalorieMetabolismCalculator';
 import { QuizSection } from './components/QuizSection';
 import { AiHealthAssistantModal } from './components/AiHealthAssistantModal';
+import { DailyHealthTip } from './components/DailyHealthTip';
 import { DiseaseDetail } from './data/diseases';
 import { sound } from './utils/audio';
 import { Heart, Sparkles, Microscope, Dna, ArrowRight, Flame, Award, Bot } from 'lucide-react';
@@ -21,6 +22,7 @@ export default function App() {
   const [showIntro, setShowIntro] = useState<boolean>(true);
   const [microscopeSpecimenId, setMicroscopeSpecimenId] = useState<string>('diabetes');
   const [showAiAssistant, setShowAiAssistant] = useState<boolean>(false);
+  const [aiInitialQuestion, setAiInitialQuestion] = useState<string>('');
 
   // Handle section navigation with audio
   const handleNavigate = (sectionId: string) => {
@@ -86,7 +88,18 @@ export default function App() {
                 onOpenMicroscope={() => handleNavigate('microscope')}
                 onOpenPrevention={() => handleNavigate('prevention-rules')}
                 onOpenQuiz={() => handleNavigate('quiz')}
-                onOpenAiAssistant={() => setShowAiAssistant(true)}
+                onOpenAiAssistant={() => {
+                  setAiInitialQuestion('');
+                  setShowAiAssistant(true);
+                }}
+              />
+
+              {/* Interactive Daily Health Tip Section */}
+              <DailyHealthTip 
+                onOpenAiWithTip={(question) => {
+                  setAiInitialQuestion(question);
+                  setShowAiAssistant(true);
+                }}
               />
             </motion.div>
           )}
@@ -208,7 +221,11 @@ export default function App() {
       {/* 6. Smart AI Health Assistant Modal */}
       <AiHealthAssistantModal
         isOpen={showAiAssistant}
-        onClose={() => setShowAiAssistant(false)}
+        initialQuestion={aiInitialQuestion}
+        onClose={() => {
+          setShowAiAssistant(false);
+          setAiInitialQuestion('');
+        }}
       />
 
       {/* 7. Floating Quick AI Health Assistant Trigger */}

@@ -183,16 +183,6 @@ export const DiseaseModal: React.FC<DiseaseModalProps> = ({
               </button>
             )}
 
-            <button
-              id="modal-organ-sound-btn"
-              onClick={() => sound.playOrganSound(disease.organKey)}
-              title={`استمع لصوت ونبض ${disease.organName}`}
-              className="px-3 py-2 rounded-xl bg-cyan-950/70 border border-cyan-500/40 text-cyan-300 hover:text-white hover:bg-cyan-900/60 shadow-[0_0_12px_rgba(6,182,212,0.3)] flex items-center gap-1.5 text-xs font-bold transition-all cursor-pointer"
-            >
-              <Volume2 className="w-4 h-4 text-cyan-400 animate-pulse" />
-              <span className="hidden sm:inline">صوت العضو</span>
-            </button>
-
             {/* Close Button */}
             <button
               id="modal-close-btn"
