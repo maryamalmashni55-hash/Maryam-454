@@ -115,17 +115,17 @@ export const QuizSection: React.FC = () => {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="text-center mb-10"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/70 border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-            <span>المختبر التشخيصي المتخصص • أسئلة سريرية مستقلة لكل مرض</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-semibold mb-3">
+            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+            <span>تحدي الوعي الطبي التفاعلي • مبادرة صحتي مسؤوليتي</span>
           </div>
 
           <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-            اختر المرض واختبر فهمك لآليته
+            اختبر فهمك للسكري والسمنة والوقاية منهما
           </h2>
           
           <p className="text-slate-400 text-sm max-w-xl mx-auto mt-2">
-            تمت برمجة أسئلة منفصلة ومتخصصة لكل مرض حقيقي لتختبر معرفتك بالبنكرياس، القلب، كريات الدم، والأيض بشكل مستقل.
+            تمت صياغة أسئلة سريرية دقيقة لتختبر معرفتك الحيوية بمرض السكري، السمنة الحشوية، وحساب السعرات والنشاط البدني.
           </p>
         </motion.div>
 
@@ -135,7 +135,7 @@ export const QuizSection: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8"
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-8"
         >
           {DISEASES_DATA.map((disease) => {
             const isSelected = disease.id === selectedDiseaseId;

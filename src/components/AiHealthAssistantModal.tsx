@@ -44,20 +44,25 @@ export const AiHealthAssistantModal: React.FC<AiHealthAssistantModalProps> = ({
     {
       id: 'welcome-1',
       role: 'assistant',
-      text: `أهلاً بك! أنا **المساعد الطبي والحيوي الذكي** لمنصة "رحلة داخل آلة الحياة: الأمراض المزمنة".
+      text: `أهلاً بك! أنا **المساعد الطبي والحيوي الذكي** لـ **مبادرة صحتي مسؤوليتي** بالمتوسطة الأولى بالراكة.
 
 🌟 **إشراف المعلمات الفاضلات:**
-• **أ. مريم** • **أ. هيا** • **أ. بشاير** • **أ. جواهر**
+• **أ. مريم** • **أ. هيا** • **أ. بشاير**
 
-🎨 **تصميم وتنفيذ:**
+🛡️ **المساعد الإداري:**
+• **أ. جواهر**
+
+🎨 **تصميم وتنفيذ وإخراج:**
 • **فريق إمـَـا**
 
+✨ **شعارنا الراسخ:**
+«غذاء متوازن • نشاط مستمر • ووعي يحمينا من السمنة والسكري»
+
 يمكنك سؤالي عن أي استفسار يتعلق بـ:
-1. **مرض السكري** (البنكرياس، الإنسولين، الحمية المقترحة).
-2. **ضغط الدم** (القلب، تصلب الشرايين، الأغذية المفيدة).
-3. **فقر الدم** (الهيموجلوبين، الحديد، الأعراض).
-4. **السمنة والتمثيل الغذائي** (معدل الحرق، السعرات، الماكروز).
-5. تفاصيل المشروع وفريق العمل والمعلمات المشرفات.`,
+1. **مرض السكري** (البنكرياس، خلايا بيتا، مقاومة الأنسولين، والحمية الجلايسيمية).
+2. **مرض السمنة** (الدهون الحشوية، مؤشر كتلة الجسم، ومحيط الخصر).
+3. **الرابط المشترك والوقاية** (كيف تحميك الرياضة والتغذية بنسبة 80%).
+4. تفاصيل المبادرة والمدرسة والمعلمات المشرفات والمساعد الإداري.`,
       time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -69,11 +74,11 @@ export const AiHealthAssistantModal: React.FC<AiHealthAssistantModalProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const quickQuestions = [
-    { label: 'ما الفرق بين سكري النوع الأول والثاني؟', icon: <Activity className="w-3.5 h-3.5 text-cyan-400" /> },
-    { label: 'كيف أخفض ضغط الدم الانقباضي طبيعياً؟', icon: <Heart className="w-3.5 h-3.5 text-rose-400" /> },
-    { label: 'ما هي أعراض فقر الدم الشائعة وأسبابه؟', icon: <Droplets className="w-3.5 h-3.5 text-emerald-400" /> },
-    { label: 'كيف أرفع معدل الأيض اليومي بدون تجويع؟', icon: <Flame className="w-3.5 h-3.5 text-amber-400" /> },
-    { label: 'من هن المعلمات المشرفات وفريق العمل؟', icon: <GraduationCap className="w-3.5 h-3.5 text-indigo-400" /> },
+    { label: 'ما الفرق بين سكري النوع الأول والنوع الثاني؟', icon: <Activity className="w-3.5 h-3.5 text-cyan-400" /> },
+    { label: 'كيف تسبب الدهون الحشوية والسمنة مقاومة الأنسولين؟', icon: <Flame className="w-3.5 h-3.5 text-amber-400" /> },
+    { label: 'ما هو المعدل الآمن لمحيط الخصر ومؤشر كتلة الجسم؟', icon: <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> },
+    { label: 'كيف أنظم وجبتي ونشاطي اليومي للوقاية من السمنة والسكري؟', icon: <Sparkles className="w-3.5 h-3.5 text-teal-400" /> },
+    { label: 'من هن المعلمات المشرفات والمساعد الإداري وفريق العمل؟', icon: <GraduationCap className="w-3.5 h-3.5 text-indigo-400" /> },
   ];
 
   // Auto-scroll to bottom on new messages
@@ -227,21 +232,21 @@ export const AiHealthAssistantModal: React.FC<AiHealthAssistantModalProps> = ({
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="text-base font-black text-white">
-                      المساعد الطبي الذكي لآلة الحياة
+                      المساعد الطبي لمبادرة صحتي مسؤوليتي
                     </h3>
-                    <span className="px-2 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/40 text-[10px] font-mono text-cyan-300">
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-950 border border-emerald-500/40 text-[10px] font-mono text-emerald-300">
                       GEMINI AI
                     </span>
                   </div>
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-slate-300 mt-0.5">
-                    <span className="flex items-center gap-1 text-cyan-300">
-                      <GraduationCap className="w-3 h-3 text-cyan-400" />
-                      <span>إشراف: أ. مريم • أ. هيا • أ. بشاير • أ. جواهر</span>
+                    <span className="flex items-center gap-1 text-emerald-300">
+                      <GraduationCap className="w-3 h-3 text-emerald-400" />
+                      <span>إشراف: أ. مريم • أ. هيا • أ. بشاير</span>
                     </span>
                     <span className="text-slate-600 hidden sm:inline">•</span>
-                    <span className="flex items-center gap-1 text-emerald-300">
-                      <Users className="w-3 h-3 text-emerald-400" />
-                      <span>تنفيذ: فريق إمـَـا</span>
+                    <span className="flex items-center gap-1 text-amber-300">
+                      <ShieldCheck className="w-3 h-3 text-amber-400" />
+                      <span>المساعد الإداري: أ. جواهر</span>
                     </span>
                   </div>
                 </div>

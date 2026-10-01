@@ -1,7 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import { motion, AnimatePresence } from 'motion/react';
 import { sound } from '../utils/audio';
-import { FastForward, Volume2, VolumeX } from 'lucide-react';
+import { 
+  Sparkles, 
+  HeartPulse, 
+  GraduationCap, 
+  School, 
+  ArrowLeft, 
+  ArrowRight,
+  Volume2, 
+  VolumeX, 
+  FastForward, 
+  ShieldCheck, 
+  RotateCcw,
+  Apple,
+  Activity,
+  Flame
+} from 'lucide-react';
 
 interface CinematicIntroProps {
   onEnter: () => void;
@@ -9,6 +25,14 @@ interface CinematicIntroProps {
 
 export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onEnter }) => {
   const mountRef = useRef<HTMLDivElement | null>(null);
+  
+  // 4 Explicit Cinematic Steps exactly as requested:
+  // 1: "غذاء متوازن" (أول شيء تطلع لحالها كبيرة ومضيئة)
+  // 2: "نشاط مستمر" (بعدين تطلع نشاط مستمر)
+  // 3: "ووعي يحمينا من السمنة والسكري"
+  // 4: "مبادرة صحتي مسؤوليتي" + المدرسة + المعلمات + المساعد الإداري
+  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [isAutoPlaying, setIsAutoPlaying] = useState<boolean>(true);
   const [isFadingOut, setIsFadingOut] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(sound.getMuted());
   const hasFinishedRef = useRef<boolean>(false);
@@ -16,592 +40,167 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onEnter }) => {
   const handleToggleMute = () => {
     const muted = sound.toggleMute();
     setIsMuted(muted);
+    if (!muted) {
+      sound.playClick(1000);
+    }
   };
 
   const handleFinish = () => {
     if (hasFinishedRef.current) return;
     hasFinishedRef.current = true;
     sound.playSubtleWhoosh();
+    sound.playHoloOpen();
     setIsFadingOut(true);
     setTimeout(() => {
       onEnter();
     }, 600);
   };
 
+  const handleNextStep = () => {
+    sound.playClick(1200);
+    if (currentStep < 4) {
+      setCurrentStep((prev) => prev + 1);
+    } else {
+      handleFinish();
+    }
+  };
+
+  const handlePrevStep = () => {
+    sound.playClick(1000);
+    if (currentStep > 1) {
+      setCurrentStep((prev) => prev - 1);
+    }
+  };
+
+  // Auto-play timer: Comfortable 3.8s per step so user clearly sees and reads each phrase
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+
+    const timer = setTimeout(() => {
+      if (currentStep === 1) {
+        sound.playClick(1100);
+        setCurrentStep(2);
+      } else if (currentStep === 2) {
+        sound.playClick(1250);
+        setCurrentStep(3);
+      } else if (currentStep === 3) {
+        sound.playSuccessChime();
+        setCurrentStep(4);
+      }
+      // Step 4 remains on screen until user clicks "دخول المنصة التفاعلية"
+    }, 3800);
+
+    return () => clearTimeout(timer);
+  }, [currentStep, isAutoPlaying]);
+
+  // Three.js ambient cosmic vitality particle space
   useEffect(() => {
     if (!mountRef.current) return;
-
     const container = mountRef.current;
     const width = container.clientWidth;
     const height = container.clientHeight;
 
-    // --- THREE.JS SCENE SETUP ---
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x02040a, 0.018);
+    scene.fog = new THREE.FogExp2(0x02050f, 0.0018);
 
-    const camera = new THREE.PerspectiveCamera(65, width / height, 0.1, 1000);
-    camera.position.set(0, 0, 0);
+    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
+    camera.position.z = 180;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.3;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     container.appendChild(renderer.domElement);
 
-    // --- PROCEDURAL BIOLOGICAL TISSUE TEXTURES ---
-    const createFleshTexture = (): THREE.CanvasTexture => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 512;
-      canvas.height = 512;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return new THREE.CanvasTexture(canvas);
+    // Particles
+    const particleCount = 800;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
 
-      // Deep organic visceral gradient
-      const grad = ctx.createLinearGradient(0, 0, 512, 512);
-      grad.addColorStop(0, '#5a0e1c');
-      grad.addColorStop(0.5, '#731424');
-      grad.addColorStop(1, '#420a14');
+    const cyanColor = new THREE.Color(0x06b6d4);
+    const emeraldColor = new THREE.Color(0x10b981);
+    const goldColor = new THREE.Color(0xf59e0b);
+
+    for (let i = 0; i < particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 500;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 500;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 500;
+
+      const mix = Math.random();
+      const chosenColor = mix < 0.45 ? emeraldColor : mix < 0.8 ? cyanColor : goldColor;
+      colors[i * 3] = chosenColor.r;
+      colors[i * 3 + 1] = chosenColor.g;
+      colors[i * 3 + 2] = chosenColor.b;
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 64;
+    canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+      grad.addColorStop(0.3, 'rgba(200, 245, 255, 0.8)');
+      grad.addColorStop(0.7, 'rgba(6, 182, 212, 0.25)');
+      grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 512, 512);
-
-      // Capillaries & vascular fiber network
-      for (let i = 0; i < 45; i++) {
-        ctx.strokeStyle = `rgba(180, 24, 45, ${0.25 + Math.random() * 0.35})`;
-        ctx.lineWidth = 1.0 + Math.random() * 2.0;
-        ctx.beginPath();
-        let x = Math.random() * 512;
-        let y = Math.random() * 512;
-        ctx.moveTo(x, y);
-        for (let j = 0; j < 5; j++) {
-          x += (Math.random() - 0.5) * 70;
-          y += (Math.random() - 0.5) * 70;
-          ctx.lineTo(x, y);
-        }
-        ctx.stroke();
-      }
-
-      // Mucosal glistening cells
-      for (let i = 0; i < 280; i++) {
-        const px = Math.random() * 512;
-        const py = Math.random() * 512;
-        const pr = 1 + Math.random() * 3.5;
-        ctx.fillStyle = `rgba(235, 90, 110, ${0.18 + Math.random() * 0.25})`;
-        ctx.beginPath();
-        ctx.arc(px, py, pr, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      const texture = new THREE.CanvasTexture(canvas);
-      texture.wrapS = THREE.RepeatWrapping;
-      texture.wrapT = THREE.RepeatWrapping;
-      texture.repeat.set(4, 24);
-      return texture;
-    };
-
-    const createFleshBumpMap = (): THREE.CanvasTexture => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 256;
-      canvas.height = 256;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return new THREE.CanvasTexture(canvas);
-
-      ctx.fillStyle = '#808080';
-      ctx.fillRect(0, 0, 256, 256);
-
-      for (let i = 0; i < 180; i++) {
-        const x = Math.random() * 256;
-        const y = Math.random() * 256;
-        const r = 2 + Math.random() * 6;
-        const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-        g.addColorStop(0, '#ffffff');
-        g.addColorStop(1, '#808080');
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      const texture = new THREE.CanvasTexture(canvas);
-      texture.wrapS = THREE.RepeatWrapping;
-      texture.wrapT = THREE.RepeatWrapping;
-      texture.repeat.set(6, 32);
-      return texture;
-    };
-
-    const fleshTexture = createFleshTexture();
-    const fleshBumpMap = createFleshBumpMap();
-
-    // --- LIGHTING ---
-    // Warm biological visceral ambient light (subsurface scattering simulation)
-    const ambientLight = new THREE.AmbientLight(0x4a121e, 1.6);
-    scene.add(ambientLight);
-
-    // Medical endoscopic camera light (focused, warm-white, realistic specular reflections)
-    const headLight = new THREE.PointLight(0xfff1ea, 4.0, 55);
-    camera.add(headLight);
-
-    const headSpot = new THREE.SpotLight(0xffeedd, 3.0, 45, Math.PI / 3.2, 0.4, 1.2);
-    headSpot.position.set(0, 0, 0);
-    headSpot.target.position.set(0, 0, -10);
-    camera.add(headSpot);
-    camera.add(headSpot.target);
-
-    scene.add(camera);
-
-    // --- CAMERA PATH (SPLINE THROUGH THE BODY) ---
-    const points = [
-      new THREE.Vector3(0, 0, 0),        // Start: Cellular tissue entry
-      new THREE.Vector3(0, -1, -30),     // Diving into vascular channel
-      new THREE.Vector3(3, 1, -70),      // Zone 1: Pulmonary tree / Bronchi
-      new THREE.Vector3(-2, 2, -110),    // Deep in Alveolar clusters
-      new THREE.Vector3(0, -1, -150),    // Zone 2: Heart chamber entrance
-      new THREE.Vector3(2, -3, -190),    // Inside Ventricular cavity
-      new THREE.Vector3(-1, 0, -230),    // Zone 3: Skeletal Ribcage & Bone
-      new THREE.Vector3(0, 2, -270),     // Trabecular bone marrow vault
-      new THREE.Vector3(0, 5, -310),     // Zone 4: Breakout threshold
-      new THREE.Vector3(0, 8, -350),     // Outside the body
-      new THREE.Vector3(0, 4, -390)      // Final holistic full body view
-    ];
-    const curve = new THREE.CatmullRomCurve3(points);
-
-    // --- CONTINUOUS REALISTIC FLESHY TISSUE TUNNEL (Inside the body) ---
-    // Solid organic vascular & visceral tube surrounding camera path up to breakout
-    const tunnelCurve = new THREE.CatmullRomCurve3(points.slice(0, 9));
-    const tunnelGeo = new THREE.TubeGeometry(tunnelCurve, 160, 4.2, 24, false);
-    const tunnelMat = new THREE.MeshStandardMaterial({
-      map: fleshTexture,
-      bumpMap: fleshBumpMap,
-      bumpScale: 0.18,
-      roughness: 0.32,
-      metalness: 0.05,
-      side: THREE.BackSide // Camera is inside the tunnel
-    });
-    const fleshTunnel = new THREE.Mesh(tunnelGeo, tunnelMat);
-    scene.add(fleshTunnel);
-
-    // --- 1. REALISTIC LUNGS & PULMONARY TREE (ZONE 1: Z ~ -40 to -120) ---
-    const lungsGroup = new THREE.Group();
-
-    // Solid cartilaginous bronchial rings (Soft ivory/pink cartilage, non-wireframe)
-    const lungRingCount = 28;
-    const lungRingGeo = new THREE.TorusGeometry(3.6, 0.18, 16, 32);
-    const lungRingMat = new THREE.MeshStandardMaterial({
-      color: 0xf3d2c9,
-      roughness: 0.35,
-      metalness: 0.04,
-      emissive: 0x5a1824,
-      emissiveIntensity: 0.2
-    });
-    
-    for (let i = 0; i < lungRingCount; i++) {
-      const ring = new THREE.Mesh(lungRingGeo, lungRingMat);
-      const t = 0.12 + (i / lungRingCount) * 0.22;
-      const pt = curve.getPointAt(t);
-      const tan = curve.getTangentAt(t);
-      ring.position.copy(pt);
-      ring.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), tan);
-      ring.scale.set(1 + Math.sin(i * 0.5) * 0.25, 1 + Math.cos(i * 0.4) * 0.2, 1);
-      lungsGroup.add(ring);
+      ctx.fillRect(0, 0, 64, 64);
     }
+    const texture = new THREE.CanvasTexture(canvas);
 
-    // Alveolar Sac Clusters (Grape-like bunches of glistening organic lung cells)
-    const alveoliClusterCount = 24;
-    const alveoliCellGeo = new THREE.SphereGeometry(0.38, 12, 12);
-    const alveoliCellMat = new THREE.MeshStandardMaterial({
-      color: 0xdf6f78,
-      roughness: 0.28,
-      metalness: 0.08,
-      emissive: 0x991b1b,
-      emissiveIntensity: 0.25,
+    const material = new THREE.PointsMaterial({
+      size: 4.5,
+      map: texture,
+      vertexColors: true,
       transparent: true,
-      opacity: 0.92
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
     });
 
-    const alveoliGroup = new THREE.Group();
-    for (let c = 0; c < alveoliClusterCount; c++) {
-      const t = 0.14 + (c / alveoliClusterCount) * 0.20;
-      const pt = curve.getPointAt(t);
-      const angle = c * 2.1;
-      const dist = 3.2 + Math.sin(c * 1.5) * 0.6;
-      const cx = pt.x + Math.cos(angle) * dist;
-      const cy = pt.y + Math.sin(angle) * dist;
-      const cz = pt.z;
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
 
-      // Group of 5-8 miniature spherical sacs per cluster
-      for (let s = 0; s < 6; s++) {
-        const cell = new THREE.Mesh(alveoliCellGeo, alveoliCellMat);
-        cell.position.set(
-          cx + (Math.random() - 0.5) * 0.7,
-          cy + (Math.random() - 0.5) * 0.7,
-          cz + (Math.random() - 0.5) * 0.7
-        );
-        cell.scale.setScalar(0.7 + Math.random() * 0.5);
-        alveoliGroup.add(cell);
-      }
-    }
-    lungsGroup.add(alveoliGroup);
-
-    // Microscopic oxygen droplets/globules (Soft, realistic glistening fluid particles)
-    const o2Count = 800;
-    const o2Geo = new THREE.BufferGeometry();
-    const o2Positions = new Float32Array(o2Count * 3);
-    for (let i = 0; i < o2Count; i++) {
-      const t = 0.12 + Math.random() * 0.23;
-      const pt = curve.getPointAt(t);
-      const radius = 0.4 + Math.random() * 3.2;
-      const angle = Math.random() * Math.PI * 2;
-      o2Positions[i * 3] = pt.x + Math.cos(angle) * radius;
-      o2Positions[i * 3 + 1] = pt.y + Math.sin(angle) * radius;
-      o2Positions[i * 3 + 2] = pt.z + (Math.random() - 0.5) * 3;
-    }
-    o2Geo.setAttribute('position', new THREE.BufferAttribute(o2Positions, 3));
-    const o2Mat = new THREE.PointsMaterial({
-      size: 0.14,
-      color: 0x93c5fd,
+    // Glowing energy rings
+    const ringGeo1 = new THREE.TorusGeometry(55, 0.35, 16, 100);
+    const ringMat1 = new THREE.MeshBasicMaterial({
+      color: 0x10b981,
       transparent: true,
-      opacity: 0.75,
-      blending: THREE.AdditiveBlending
+      opacity: 0.35,
+      blending: THREE.AdditiveBlending,
     });
-    const o2Points = new THREE.Points(o2Geo, o2Mat);
-    lungsGroup.add(o2Points);
-    scene.add(lungsGroup);
+    const ring1 = new THREE.Mesh(ringGeo1, ringMat1);
+    ring1.rotation.x = Math.PI / 3;
+    scene.add(ring1);
 
-    // --- 2. REALISTIC CARDIAC CHAMBER & BLOOD STREAM (ZONE 2: Z ~ -130 to -210) ---
-    const heartGroup = new THREE.Group();
-
-    // Solid muscular ridges / Trabeculae carneae (Organic myocardium rings, deep ruby)
-    const heartRingCount = 26;
-    const heartRingGeo = new THREE.TorusGeometry(3.5, 0.32, 16, 32);
-    const heartRingMat = new THREE.MeshStandardMaterial({
-      color: 0x70101f,
-      bumpMap: fleshBumpMap,
-      bumpScale: 0.25,
-      roughness: 0.35,
-      metalness: 0.08,
-      emissive: 0x420912,
-      emissiveIntensity: 0.3
-    });
-
-    const heartRings: THREE.Mesh[] = [];
-    for (let i = 0; i < heartRingCount; i++) {
-      const ring = new THREE.Mesh(heartRingGeo, heartRingMat);
-      const t = 0.38 + (i / heartRingCount) * 0.24;
-      const pt = curve.getPointAt(t);
-      const tan = curve.getTangentAt(t);
-      ring.position.copy(pt);
-      ring.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), tan);
-      ring.scale.set(1.1 + Math.sin(i * 0.4) * 0.35, 0.95 + Math.cos(i * 0.4) * 0.3, 1);
-      heartGroup.add(ring);
-      heartRings.push(ring);
-    }
-
-    // Authentic Biconcave Red Blood Cell (RBC) Stream (Solid glistening disks tumbling in blood)
-    const rbcDiskGroup = new THREE.Group();
-    const rbcMeshCount = 180;
-    const rbcDiskGeo = new THREE.CylinderGeometry(0.26, 0.26, 0.08, 16);
-    rbcDiskGeo.scale(1, 0.6, 1); // Flatten into real biconcave erythrocyte proportion
-    const rbcDiskMat = new THREE.MeshStandardMaterial({
-      color: 0xb91c1c,
-      roughness: 0.24,
-      metalness: 0.12,
-      emissive: 0x5a0a14,
-      emissiveIntensity: 0.2
-    });
-
-    const rbcMeshes: THREE.Mesh[] = [];
-    for (let i = 0; i < rbcMeshCount; i++) {
-      const mesh = new THREE.Mesh(rbcDiskGeo, rbcDiskMat);
-      const t = 0.38 + (i / rbcMeshCount) * 0.24;
-      const pt = curve.getPointAt(t);
-      const radius = 0.4 + Math.random() * 2.8;
-      const angle = Math.random() * Math.PI * 2;
-      mesh.position.set(
-        pt.x + Math.cos(angle) * radius,
-        pt.y + Math.sin(angle) * radius,
-        pt.z + (Math.random() - 0.5) * 4
-      );
-      mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
-      rbcDiskGroup.add(mesh);
-      rbcMeshes.push(mesh);
-    }
-    heartGroup.add(rbcDiskGroup);
-
-    // Anatomical Heart Center (Ventricles & Aorta Model, rich solid muscular tissue)
-    const heartCenterGrp = new THREE.Group();
-    const ventricleGeo = new THREE.SphereGeometry(3.8, 24, 24);
-    ventricleGeo.scale(0.85, 1.25, 0.85); // Organic heart cone shape
-    const ventricleMat = new THREE.MeshStandardMaterial({
-      color: 0x881337,
-      bumpMap: fleshBumpMap,
-      bumpScale: 0.3,
-      roughness: 0.32,
-      metalness: 0.08,
-      emissive: 0x450a14,
-      emissiveIntensity: 0.35
-    });
-    const heartVent = new THREE.Mesh(ventricleGeo, ventricleMat);
-    heartCenterGrp.add(heartVent);
-
-    // Aorta arch vessel branching from the top of the heart
-    const aortaCurve = new THREE.CubicBezierCurve3(
-      new THREE.Vector3(0, 3.2, 0),
-      new THREE.Vector3(0, 5.5, -1),
-      new THREE.Vector3(2.5, 5.0, -2),
-      new THREE.Vector3(2.8, 2.5, -3)
-    );
-    const aortaGeo = new THREE.TubeGeometry(aortaCurve, 20, 0.7, 16, false);
-    const aortaMat = new THREE.MeshStandardMaterial({
-      color: 0x991b1b,
-      roughness: 0.28,
-      metalness: 0.08
-    });
-    const aortaMesh = new THREE.Mesh(aortaGeo, aortaMat);
-    heartCenterGrp.add(aortaMesh);
-
-    const heartCenterPos = curve.getPointAt(0.5);
-    heartCenterGrp.position.copy(heartCenterPos);
-    heartGroup.add(heartCenterGrp);
-    scene.add(heartGroup);
-
-    // --- 3. REALISTIC SKELETAL MATRIX & RIBS (ZONE 3: Z ~ -220 to -290) ---
-    const boneGroup = new THREE.Group();
-
-    // Solid 3D Ivory Rib Arches (Realistic bone curvature, cylindrical cross-section)
-    const ribCount = 18;
-    const ribBoneMat = new THREE.MeshStandardMaterial({
-      color: 0xfdfbf7, // Natural ivory bone
-      roughness: 0.42,
-      metalness: 0.04,
-      emissive: 0x3d3627,
-      emissiveIntensity: 0.15
-    });
-
-    for (let i = 0; i < ribCount; i++) {
-      const ribRadiusX = 4.6 + (i % 3) * 0.35;
-      const ribRadiusY = 3.6;
-      const ribCurve2D = new THREE.EllipseCurve(0, 0, ribRadiusX, ribRadiusY, 0, Math.PI, false, 0);
-      const ribPts = ribCurve2D.getPoints(24).map(p => new THREE.Vector3(p.x, p.y, 0));
-      const ribCurve3D = new THREE.CatmullRomCurve3(ribPts);
-      const ribTubeGeo = new THREE.TubeGeometry(ribCurve3D, 24, 0.22, 12, false);
-      const ribMesh = new THREE.Mesh(ribTubeGeo, ribBoneMat);
-
-      const t = 0.64 + (i / ribCount) * 0.22;
-      const pt = curve.getPointAt(t);
-      const tan = curve.getTangentAt(t);
-      ribMesh.position.copy(pt);
-      ribMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), tan);
-      boneGroup.add(ribMesh);
-    }
-
-    // Porous Trabecular Bone Mineral Network (Solid ivory struts)
-    const trabGroup = new THREE.Group();
-    const trabStrutGeo = new THREE.CylinderGeometry(0.08, 0.08, 1.4, 8);
-    for (let i = 0; i < 70; i++) {
-      const strut = new THREE.Mesh(trabStrutGeo, ribBoneMat);
-      const t = 0.65 + Math.random() * 0.20;
-      const pt = curve.getPointAt(t);
-      const rad = 1.8 + Math.random() * 2.2;
-      const ang = Math.random() * Math.PI * 2;
-      strut.position.set(pt.x + Math.cos(ang) * rad, pt.y + Math.sin(ang) * rad, pt.z + (Math.random() - 0.5) * 3);
-      strut.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
-      trabGroup.add(strut);
-    }
-    boneGroup.add(trabGroup);
-    scene.add(boneGroup);
-
-    // --- 4. REALISTIC BREAKOUT & HOLISTIC HUMAN ANATOMY (ZONE 4: OUTSIDE THE BODY) ---
-    const macroGroup = new THREE.Group();
-    const finalPt = curve.getPointAt(0.96);
-
-    // Realistic Anatomical Human Silhouette (Torso, head, shoulders)
-    const torsoGeo = new THREE.CylinderGeometry(1.2, 1.8, 8.5, 20);
-    torsoGeo.scale(1.2, 1.0, 0.7); // Human chest proportions
-    const skinMat = new THREE.MeshStandardMaterial({
-      color: 0xe0a996, // Warm human skin tone
-      roughness: 0.5,
-      metalness: 0.05,
+    const ringGeo2 = new THREE.TorusGeometry(75, 0.25, 16, 120);
+    const ringMat2 = new THREE.MeshBasicMaterial({
+      color: 0x06b6d4,
       transparent: true,
-      opacity: 0.65
+      opacity: 0.25,
+      blending: THREE.AdditiveBlending,
     });
-    const torsoMesh = new THREE.Mesh(torsoGeo, skinMat);
-    torsoMesh.position.set(finalPt.x, finalPt.y + 1, finalPt.z - 22);
-    macroGroup.add(torsoMesh);
+    const ring2 = new THREE.Mesh(ringGeo2, ringMat2);
+    ring2.rotation.y = Math.PI / 4;
+    scene.add(ring2);
 
-    // Head
-    const headGeo = new THREE.SphereGeometry(1.2, 20, 20);
-    headGeo.scale(0.85, 1.15, 0.95);
-    const headMesh = new THREE.Mesh(headGeo, skinMat);
-    headMesh.position.set(finalPt.x, finalPt.y + 6.2, finalPt.z - 22);
-    macroGroup.add(headMesh);
-
-    // Visible Internal Organs inside the translucent torso (Heart & Lungs)
-    const innerHeartGeo = new THREE.SphereGeometry(0.75, 16, 16);
-    const innerHeartMat = new THREE.MeshStandardMaterial({
-      color: 0xef4444,
-      emissive: 0xdc2626,
-      emissiveIntensity: 0.6,
-      roughness: 0.3
-    });
-    const innerHeart = new THREE.Mesh(innerHeartGeo, innerHeartMat);
-    innerHeart.position.set(finalPt.x - 0.4, finalPt.y + 1.6, finalPt.z - 22);
-    macroGroup.add(innerHeart);
-
-    const innerLungGeo = new THREE.SphereGeometry(0.9, 16, 16);
-    innerLungGeo.scale(0.8, 1.3, 0.7);
-    const innerLungMat = new THREE.MeshStandardMaterial({
-      color: 0x38bdf8,
-      emissive: 0x0284c7,
-      emissiveIntensity: 0.4,
-      transparent: true,
-      opacity: 0.8
-    });
-    const leftLung = new THREE.Mesh(innerLungGeo, innerLungMat);
-    leftLung.position.set(finalPt.x - 1.1, finalPt.y + 1.8, finalPt.z - 22);
-    macroGroup.add(leftLung);
-
-    const rightLung = new THREE.Mesh(innerLungGeo, innerLungMat);
-    rightLung.position.set(finalPt.x + 1.1, finalPt.y + 1.8, finalPt.z - 22);
-    macroGroup.add(rightLung);
-
-    // Soft warm environmental lighting around the emerged human body
-    const haloLight = new THREE.PointLight(0x38bdf8, 2.5, 35);
-    haloLight.position.set(finalPt.x, finalPt.y + 2, finalPt.z - 18);
-    macroGroup.add(haloLight);
-
-    scene.add(macroGroup);
-
-    // --- MOUSE PARALLAX CONTROLS ---
-    let mouseX = 0;
-    let mouseY = 0;
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-      mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-
-    // --- ANIMATION TIMELINE ENGINE ---
-    let progress = 0;
+    let reqId: number;
     let clock = new THREE.Clock();
-    let animId: number;
-    let lastAudioTriggerStage = -1;
 
     const animate = () => {
-      animId = requestAnimationFrame(animate);
-
-      // Clamp delta to prevent big frame skips or stutter
-      const rawDelta = clock.getDelta();
-      const delta = Math.min(rawDelta, 0.04);
+      reqId = requestAnimationFrame(animate);
       const elapsed = clock.getElapsedTime();
 
-      // Camera flight progress (0.0 to 1.0 in ~10 seconds for silky, snappy responsiveness)
-      progress += delta * 0.105;
-      if (progress > 1.0) progress = 1.0;
+      particles.rotation.y = elapsed * 0.03;
+      particles.rotation.x = elapsed * 0.015;
 
-      // Update current camera position & look-ahead point
-      const camPos = curve.getPointAt(progress);
-      const lookAheadProgress = Math.min(progress + 0.025, 1.0);
-      const lookAtPos = curve.getPointAt(lookAheadProgress);
-
-      // Mouse subtle offset for dynamic control
-      camera.position.x = camPos.x + mouseX * 0.8;
-      camera.position.y = camPos.y + mouseY * 0.6;
-      camera.position.z = camPos.z;
-      camera.lookAt(lookAtPos.x + mouseX * 1.5, lookAtPos.y + mouseY * 1.2, lookAtPos.z);
-
-      // Medical light adjusts naturally to organ illumination
-      if (progress < 0.35) {
-        // Pulmonary: Soft warm natural tone with slight oxygen cyan fill
-        headLight.color.setHex(0xfef2f2);
-        if (scene.fog) scene.fog.color.setHex(0x1a080e);
-      } else if (progress < 0.62) {
-        // Cardiac: Deep warm visceral arterial glow
-        headLight.color.setHex(0xffe4e6);
-        if (scene.fog) scene.fog.color.setHex(0x24060c);
-      } else if (progress < 0.85) {
-        // Skeletal / Bone: Warm natural ivory ambient
-        headLight.color.setHex(0xfef9c3);
-        if (scene.fog) scene.fog.color.setHex(0x1a150b);
-      } else {
-        // Breakout: Clean daylight clarity
-        headLight.color.setHex(0xffffff);
-        if (scene.fog) scene.fog.color.setHex(0x030712);
-      }
-
-      // Hide internal tunnel when emerging into open air
-      fleshTunnel.visible = progress < 0.90;
-
-      // Realistic cardiac rhythmic contraction (systole & diastole)
-      const heartPulse = 1.0 + Math.pow(Math.sin(elapsed * 4.2), 6) * 0.22;
-      heartVent.scale.set(0.85 * heartPulse, 1.25 * heartPulse, 0.85 * heartPulse);
-      innerHeart.scale.setScalar(heartPulse * 0.9);
-
-      // Pulse myocardial wall rings
-      heartRings.forEach((r, idx) => {
-        r.scale.set(
-          1.1 + Math.sin(elapsed * 4.2 + idx * 0.25) * 0.12,
-          0.95 + Math.cos(elapsed * 4.2 + idx * 0.25) * 0.12,
-          1.0
-        );
-      });
-
-      // Realistic RBC tumbling flow
-      rbcMeshes.forEach((m) => {
-        m.rotation.x += 0.02;
-        m.rotation.y += 0.03;
-      });
-
-      // Alveoli respiratory breathing motion
-      alveoliGroup.children.forEach((cell, idx) => {
-        const breath = 1.0 + Math.sin(elapsed * 1.8 + idx * 0.3) * 0.08;
-        cell.scale.setScalar(breath);
-      });
-
-      // Oxygen particles gentle drift
-      o2Points.rotation.z += 0.002;
-      trabGroup.rotation.z = Math.sin(elapsed * 0.2) * 0.05;
-      macroGroup.rotation.y = elapsed * 0.12;
-
-      // STAGE DISPATCHER FOR AUDIO TRANSITIONS
-      let activeStageIdx = 0;
-      if (progress < 0.12) {
-        activeStageIdx = 0;
-      } else if (progress < 0.37) {
-        activeStageIdx = 1;
-      } else if (progress < 0.63) {
-        activeStageIdx = 2;
-      } else if (progress < 0.86) {
-        activeStageIdx = 3;
-      } else {
-        activeStageIdx = 4;
-      }
-
-      // AUDIO TRIGGER PER STAGE TRANSITION
-      if (activeStageIdx !== lastAudioTriggerStage) {
-        lastAudioTriggerStage = activeStageIdx;
-        sound.initContext?.();
-
-        if (activeStageIdx === 0) {
-          sound.playTissueDiveSound();
-        } else if (activeStageIdx === 1) {
-          sound.playLungBronchialBreeze();
-        } else if (activeStageIdx === 2) {
-          sound.playCardiacChamberThump();
-        } else if (activeStageIdx === 3) {
-          sound.playBoneMatrixResonance();
-        } else if (activeStageIdx === 4) {
-          sound.playBreakoutExplosion();
-        }
-      }
-
-      // Automatically finish intro once progress reaches end
-      if (progress >= 0.99 && !hasFinishedRef.current) {
-        handleFinish();
-      }
+      ring1.rotation.z = elapsed * 0.08;
+      ring2.rotation.y = Math.PI / 4 + elapsed * 0.06;
 
       renderer.render(scene, camera);
     };
-
     animate();
 
     const handleResize = () => {
@@ -615,65 +214,393 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onEnter }) => {
     window.addEventListener('resize', handleResize);
 
     return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener('mousemove', handleMouseMove);
+      cancelAnimationFrame(reqId);
       window.removeEventListener('resize', handleResize);
-      if (container && renderer.domElement) {
+      if (renderer.domElement && container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
       renderer.dispose();
+      geometry.dispose();
+      material.dispose();
+      texture.dispose();
     };
   }, []);
 
   return (
     <div 
-      className={`fixed inset-0 z-50 bg-black overflow-hidden transition-opacity duration-700 select-none ${
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-[#02050f] text-slate-100 transition-opacity duration-700 select-none overflow-hidden ${
         isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
-      {/* 3D WebGL Canvas Container */}
-      <div ref={mountRef} className="absolute inset-0 z-0 bg-[#02040a] cursor-crosshair" />
+      {/* Background WebGL Canvas */}
+      <div ref={mountRef} className="absolute inset-0 z-0 pointer-events-none" />
 
-      {/* Subtle Radial Vignette overlay */}
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(2,6,23,0.85)_100%)] z-10" />
+      {/* Radial ambient glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[750px] bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-amber-500/15 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute inset-0 bg-radial-[circle_at_center,transparent_0%,rgba(2,5,15,0.85)_100%] pointer-events-none" />
 
-      {/* Top Floating Controls (Pure Icons, Zero Text) */}
-      <div className="absolute top-5 right-5 z-20 flex items-center gap-3">
+      {/* Top Header Action Bar */}
+      <div className="absolute top-5 inset-x-5 z-20 flex items-center justify-between pointer-events-auto">
         <button
           onClick={handleToggleMute}
-          className="p-2.5 rounded-full bg-slate-950/50 hover:bg-slate-900/80 border border-white/10 hover:border-cyan-500/50 text-slate-300 hover:text-white transition-all cursor-pointer backdrop-blur-md shadow-lg"
-          aria-label={isMuted ? 'Unmute' : 'Mute'}
+          className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700 text-xs text-slate-300 hover:text-white backdrop-blur-md transition-all cursor-pointer shadow-lg"
         >
-          {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-cyan-400" />}
+          {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
+          <span className="hidden sm:inline">{isMuted ? 'الصوت مكتوم' : 'الصوت مفعل'}</span>
         </button>
 
+        {/* Step indicator pills */}
+        <div className="flex items-center gap-2 bg-slate-900/70 border border-slate-800 px-4 py-1.5 rounded-full backdrop-blur-md">
+          <span className="text-[11px] text-slate-400 font-mono ml-1">المشهد:</span>
+          {[1, 2, 3, 4].map((s) => (
+            <button
+              key={s}
+              onClick={() => {
+                sound.playClick(1000);
+                setIsAutoPlaying(false);
+                setCurrentStep(s);
+              }}
+              className={`h-2 rounded-full transition-all cursor-pointer ${
+                currentStep === s 
+                  ? 'w-8 bg-gradient-to-r from-emerald-400 to-cyan-400' 
+                  : currentStep > s 
+                  ? 'w-3 bg-emerald-700' 
+                  : 'w-2 bg-slate-800'
+              }`}
+              title={`الانتقال للخطوة ${s}`}
+            />
+          ))}
+        </div>
+
         <button
-          id="skip-flight-btn"
           onClick={handleFinish}
-          className="p-2.5 rounded-full bg-slate-950/50 hover:bg-slate-900/80 border border-white/10 hover:border-cyan-500/50 text-slate-300 hover:text-cyan-300 transition-all cursor-pointer backdrop-blur-md shadow-lg group"
-          aria-label="Skip"
+          className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/50 text-xs text-emerald-200 hover:text-white backdrop-blur-md transition-all cursor-pointer font-bold shadow-[0_0_15px_rgba(16,185,129,0.3)]"
         >
-          <FastForward className="w-4 h-4 group-hover:scale-110 transition-transform" />
+          <span>تخطي ودخول</span>
+          <FastForward className="w-3.5 h-3.5" />
         </button>
       </div>
 
-      {/* Bottom Center Direct Access Pill */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20">
-        <button
-          onClick={handleFinish}
-          className="px-5 py-2 rounded-full bg-slate-950/80 hover:bg-slate-900 border border-cyan-500/40 hover:border-cyan-300 text-cyan-300 hover:text-white text-xs font-bold flex items-center gap-2 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-all cursor-pointer hover:scale-105"
-        >
-          <span>تخطي المشهد والدخول المباشر</span>
-          <FastForward className="w-3.5 h-3.5 text-cyan-400" />
-        </button>
-      </div>
+      {/* Main Cinematic Viewport */}
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 text-center flex flex-col items-center justify-center min-h-screen py-16">
+        
+        <AnimatePresence mode="wait">
+          
+          {/* STEP 1: أول شيء تطلع لحالها: «غـذاءٌ مـتـوازن» بتدرج كلمة وراء كلمة */}
+          {currentStep === 1 && (
+            <motion.div
+              key="step-1"
+              initial={{ opacity: 0, scale: 0.9, y: 25 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 1.08, y: -25 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col items-center max-w-3xl"
+            >
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-bold mb-8 shadow-[0_0_20px_rgba(16,185,129,0.25)]"
+              >
+                <Apple className="w-4 h-4 text-emerald-400 animate-pulse" />
+                <span>الركيزة الأولى لصحة الجسد</span>
+              </motion.div>
 
-      {/* White Flash Breakout Transition */}
-      <div 
-        className={`fixed inset-0 z-50 bg-white pointer-events-none transition-opacity duration-700 ${
-          isFadingOut ? 'opacity-100' : 'opacity-0'
-        }`} 
-      />
+              {/* Staggered Word by Word Reveal: تطلع شوي شوي */}
+              <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 mb-6">
+                <motion.span
+                  initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  transition={{ duration: 0.8, delay: 0.25, ease: 'easeOut' }}
+                  className="text-5xl sm:text-7xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-100 to-emerald-400 drop-shadow-[0_0_40px_rgba(16,185,129,0.85)] tracking-tight leading-tight inline-block"
+                >
+                  «غـذاءٌ
+                </motion.span>
+                <motion.span
+                  initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  transition={{ duration: 0.8, delay: 0.85, ease: 'easeOut' }}
+                  className="text-5xl sm:text-7xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-200 via-emerald-200 to-teal-300 drop-shadow-[0_0_40px_rgba(16,185,129,0.85)] tracking-tight leading-tight inline-block"
+                >
+                  مـتـوازن»
+                </motion.span>
+              </div>
+
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 1.4 }}
+                className="text-base sm:text-xl text-slate-300 max-w-xl leading-relaxed font-medium mb-10"
+              >
+                حماية الخلايا تبدأ من طبقك: ألياف كاملة، بروتين نقي، واستغناء تام عن السكريات المصنعة.
+              </motion.p>
+
+              {/* Next step button */}
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 1.8 }}
+                onClick={handleNextStep}
+                className="px-6 py-2.5 rounded-full bg-slate-900/90 hover:bg-slate-800 border border-emerald-500/40 text-emerald-300 hover:text-white text-xs font-bold flex items-center gap-2 cursor-pointer transition-all shadow-lg"
+              >
+                <span>الخطوة التالية (نشاط مستمر)</span>
+                <ArrowLeft className="w-4 h-4" />
+              </motion.button>
+            </motion.div>
+          )}
+
+          {/* STEP 2: بعدين تطلع: «نـشـاطٌ مـسـتـمـر» بتدرج كلمة وراء كلمة */}
+          {currentStep === 2 && (
+            <motion.div
+              key="step-2"
+              initial={{ opacity: 0, scale: 0.9, y: 25 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 1.08, y: -25 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col items-center max-w-3xl"
+            >
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-950/80 border border-amber-500/40 text-amber-300 text-xs font-bold mb-8 shadow-[0_0_20px_rgba(245,158,11,0.25)]"
+              >
+                <Flame className="w-4 h-4 text-amber-400 animate-pulse" />
+                <span>الركيزة الثانية للطاقة والتمثيل الغذائي</span>
+              </motion.div>
+
+              {/* Staggered Word by Word Reveal */}
+              <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 mb-6">
+                <motion.span
+                  initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  transition={{ duration: 0.8, delay: 0.25, ease: 'easeOut' }}
+                  className="text-5xl sm:text-7xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-100 to-amber-400 drop-shadow-[0_0_40px_rgba(245,158,11,0.85)] tracking-tight leading-tight inline-block"
+                >
+                  «نـشـاطٌ
+                </motion.span>
+                <motion.span
+                  initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  transition={{ duration: 0.8, delay: 0.85, ease: 'easeOut' }}
+                  className="text-5xl sm:text-7xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-200 to-yellow-300 drop-shadow-[0_0_40px_rgba(245,158,11,0.85)] tracking-tight leading-tight inline-block"
+                >
+                  مـسـتـمـر»
+                </motion.span>
+              </div>
+
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 1.4 }}
+                className="text-base sm:text-xl text-slate-300 max-w-xl leading-relaxed font-medium mb-10"
+              >
+                150 دقيقة أسبوعياً من الحركة والمشي تحرق الدهون الحشوية وتفتح بوابات الأنسولين تلقائياً.
+              </motion.p>
+
+              {/* Next step button */}
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 1.8 }}
+                onClick={handleNextStep}
+                className="px-6 py-2.5 rounded-full bg-slate-900/90 hover:bg-slate-800 border border-amber-500/40 text-amber-300 hover:text-white text-xs font-bold flex items-center gap-2 cursor-pointer transition-all shadow-lg"
+              >
+                <span>الخطوة التالية (ووعي يحمينا)</span>
+                <ArrowLeft className="w-4 h-4" />
+              </motion.button>
+            </motion.div>
+          )}
+
+          {/* STEP 3: «ووعي يحمينا من السمنة والسكري» بتدرج تتابعي */}
+          {currentStep === 3 && (
+            <motion.div
+              key="step-3"
+              initial={{ opacity: 0, scale: 0.9, y: 25 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 1.08, y: -25 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col items-center max-w-3xl"
+            >
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-bold mb-8 shadow-[0_0_20px_rgba(6,182,212,0.25)]"
+              >
+                <Sparkles className="w-4 h-4 text-cyan-400 animate-pulse" />
+                <span>الهدف الأسمى للوقاية</span>
+              </motion.div>
+
+              {/* Staggered Multi-Line Reveal */}
+              <div className="flex flex-col items-center justify-center gap-2 mb-6">
+                <div className="flex items-center justify-center gap-3 sm:gap-4">
+                  <motion.span
+                    initial={{ opacity: 0, y: 25, filter: 'blur(8px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    transition={{ duration: 0.7, delay: 0.25, ease: 'easeOut' }}
+                    className="text-4xl sm:text-6xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-100 to-teal-200 drop-shadow-[0_0_40px_rgba(6,182,212,0.85)] tracking-tight inline-block"
+                  >
+                    «ووعـيٌ
+                  </motion.span>
+                  <motion.span
+                    initial={{ opacity: 0, y: 25, filter: 'blur(8px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    transition={{ duration: 0.7, delay: 0.75, ease: 'easeOut' }}
+                    className="text-4xl sm:text-6xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-200 via-cyan-200 to-sky-300 drop-shadow-[0_0_40px_rgba(6,182,212,0.85)] tracking-tight inline-block"
+                  >
+                    يـحـمـيـنـا
+                  </motion.span>
+                </div>
+                <motion.span
+                  initial={{ opacity: 0, y: 25, filter: 'blur(8px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  transition={{ duration: 0.8, delay: 1.35, ease: 'easeOut' }}
+                  className="text-3xl sm:text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-cyan-200 to-amber-300 drop-shadow-[0_0_40px_rgba(16,185,129,0.7)] tracking-tight inline-block"
+                >
+                  من السمنة والسكري»
+                </motion.span>
+              </div>
+
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 1.8 }}
+                className="text-base sm:text-xl text-slate-300 max-w-xl leading-relaxed font-medium mb-10"
+              >
+                الفهم الصحي المبكر يمنع 80% من الأمراض المزمنة ويصنع مستقبلاً آمناً لأجسادنا.
+              </motion.p>
+
+              {/* Next step button */}
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 2.2 }}
+                onClick={handleNextStep}
+                className="px-6 py-2.5 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 text-xs font-black flex items-center gap-2 cursor-pointer transition-all shadow-[0_0_25px_rgba(16,185,129,0.5)]"
+              >
+                <span>كشف المبادرة والمدرسة</span>
+                <ArrowLeft className="w-4 h-4" />
+              </motion.button>
+            </motion.div>
+          )}
+
+          {/* STEP 4: مبادرة صحتي مسؤوليتي + المدرسة + المعلمات + المساعد الإداري + دخول المنصة */}
+          {currentStep === 4 && (
+            <motion.div
+              key="step-4"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full flex flex-col items-center"
+            >
+              {/* Shield Crest */}
+              <div className="relative w-20 h-20 rounded-3xl bg-gradient-to-br from-emerald-950 via-slate-900 to-cyan-950 border-2 border-emerald-400/60 flex items-center justify-center mb-4 shadow-[0_0_35px_rgba(16,185,129,0.4)]">
+                <HeartPulse className="w-10 h-10 text-emerald-400 animate-pulse" />
+              </div>
+
+              {/* Slogan Pill */}
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/90 border border-emerald-500/40 text-emerald-300 text-xs font-bold mb-3 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                <Sparkles className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+                <span>غذاء متوازن • نشاط مستمر • ووعي يحمينا من السمنة والسكري</span>
+              </div>
+
+              {/* Initiative Title */}
+              <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tight mb-2">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-200 to-cyan-300 drop-shadow-[0_0_35px_rgba(16,185,129,0.6)]">
+                  مبادرة صحتي مسؤوليتي
+                </span>
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-300 mb-8 max-w-xl">
+                المنصة التفاعلية المتخصصة للوقاية من مرض السكري ومرض السمنة
+              </p>
+
+              {/* Side Cards: School Name + Teachers */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 w-full max-w-4xl mb-6">
+                
+                {/* Right Card: School Name (المدرسة: المتوسطة الأولى بالراكة) */}
+                <div className="p-5 sm:p-6 rounded-3xl bg-slate-900/80 border border-cyan-500/40 backdrop-blur-xl shadow-[0_0_30px_rgba(6,182,212,0.15)] flex items-center gap-4 text-right">
+                  <div className="w-14 h-14 rounded-2xl bg-cyan-950/90 border border-cyan-500/50 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(6,182,212,0.3)]">
+                    <School className="w-7 h-7 text-cyan-300" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold text-cyan-400 block mb-0.5">المدرسة:</span>
+                    <h3 className="text-lg sm:text-xl font-black text-white">
+                      المتوسطة الأولى بالراكة
+                    </h3>
+                    <p className="text-xs text-slate-400 mt-1 leading-snug">
+                      بيئة مدرسية معززة للصحة والوعي الرياضي والغذائي السليم.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Left Card: Supervisors (إشراف المعلمات: مريم، هيا، بشاير) */}
+                <div className="p-5 sm:p-6 rounded-3xl bg-slate-900/80 border border-emerald-500/40 backdrop-blur-xl shadow-[0_0_30px_rgba(16,185,129,0.15)] flex items-center gap-4 text-right">
+                  <div className="w-14 h-14 rounded-2xl bg-emerald-950/90 border border-emerald-500/50 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+                    <GraduationCap className="w-7 h-7 text-emerald-300" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold text-emerald-400 block mb-0.5">إشراف المعلمات الفاضلات:</span>
+                    <h3 className="text-base sm:text-lg font-black text-emerald-300">
+                      أ. مريم • أ. هيا • أ. بشاير
+                    </h3>
+                    <p className="text-xs text-slate-400 mt-1 leading-snug">
+                      عطاء تربوي متميز لدعم صحة الطالبات ونشر الثقافة الوقائية.
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Bottom Combined Bar: Administrative Assistant (مساعد الإداري جواهر) + Execution Team */}
+              <div className="w-full max-w-4xl p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border border-slate-800 shadow-xl flex flex-wrap items-center justify-between gap-3 text-right text-xs mb-8">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-amber-950/80 border border-amber-500/40 text-amber-400 flex items-center justify-center shrink-0">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] text-slate-400 block font-medium">المساعد الإداري:</span>
+                    <span className="text-sm font-black text-amber-300">أ. جواهر</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-400 font-medium">تصميم وتنفيذ وإخراج:</span>
+                  <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-black">
+                    فريق إمـَـا
+                  </span>
+                </div>
+              </div>
+
+              {/* Enter Platform Action Button */}
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <button
+                  onClick={handleFinish}
+                  className="px-8 sm:px-10 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black text-sm sm:text-base shadow-[0_0_35px_rgba(16,185,129,0.5)] hover:shadow-[0_0_50px_rgba(16,185,129,0.7)] transition-all transform hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-3 border border-emerald-200/50"
+                >
+                  <span>دخول المنصة التفاعلية</span>
+                  <ArrowLeft className="w-5 h-5 text-slate-950" />
+                </button>
+
+                <button
+                  onClick={() => {
+                    sound.playClick(1000);
+                    setIsAutoPlaying(true);
+                    setCurrentStep(1);
+                  }}
+                  className="px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>إعادة المشهد السينمائي من البداية</span>
+                </button>
+              </div>
+
+            </motion.div>
+          )}
+
+        </AnimatePresence>
+
+      </div>
     </div>
   );
 };

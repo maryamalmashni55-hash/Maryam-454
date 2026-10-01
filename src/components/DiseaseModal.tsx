@@ -136,24 +136,35 @@ export const DiseaseModal: React.FC<DiseaseModalProps> = ({
       {/* Click outside backdrop to close */}
       <div className="fixed inset-0" onClick={handleClose} />
 
+      {/* Warm Orange Glow Specifically for Diabetes */}
+      {disease.id === 'diabetes' && (
+        <>
+          <div className="absolute top-1/4 -right-10 w-[700px] h-[700px] bg-gradient-to-br from-amber-500/30 via-orange-600/25 to-transparent rounded-full blur-[150px] pointer-events-none animate-pulse" />
+          <div className="absolute -bottom-20 -left-10 w-[600px] h-[600px] bg-gradient-to-tr from-orange-500/25 via-amber-600/20 to-transparent rounded-full blur-[140px] pointer-events-none" />
+        </>
+      )}
+
       {/* Modal Container */}
       <div 
         className="relative z-10 w-full max-w-4xl bg-slate-900/95 border rounded-3xl shadow-[0_0_60px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col max-h-[92vh]"
-        style={{ borderColor: `${disease.color.primary}55` }}
+        style={{ 
+          borderColor: disease.id === 'diabetes' ? '#f97316aa' : `${disease.color.primary}55`,
+          boxShadow: disease.id === 'diabetes' ? '0 0 60px rgba(249, 115, 22, 0.35)' : undefined
+        }}
       >
         
         {/* Top Glowing Header Bar */}
         <div 
           className="relative px-6 py-5 border-b flex items-center justify-between"
           style={{ 
-            backgroundColor: `${disease.color.primary}12`,
-            borderColor: `${disease.color.primary}30` 
+            backgroundColor: `${disease.color.primary}18`,
+            borderColor: `${disease.color.primary}35` 
           }}
         >
           {/* Organ and Disease Title */}
           <div className="text-right">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono px-2.5 py-0.5 rounded-full border bg-slate-950/60" style={{ color: disease.color.primary, borderColor: `${disease.color.primary}50` }}>
+              <span className="text-xs font-mono px-2.5 py-0.5 rounded-full border bg-slate-950/60 font-bold" style={{ color: disease.color.primary, borderColor: `${disease.color.primary}60` }}>
                 {disease.badge}
               </span>
               <span className="text-xs text-slate-400 font-mono">ORGAN REGION: {disease.organKey.toUpperCase()}</span>
@@ -168,21 +179,6 @@ export const DiseaseModal: React.FC<DiseaseModalProps> = ({
 
           {/* Header Action Buttons */}
           <div className="flex items-center gap-2">
-            {onOpenMicroscope && (
-              <button
-                id="modal-microscope-btn"
-                onClick={() => {
-                  onOpenMicroscope(disease.id);
-                  handleClose();
-                }}
-                title="فحص الخلايا عبر المجهر السينمائي فائق الدقة"
-                className="px-3 py-2 rounded-xl bg-purple-950/70 border border-purple-500/40 text-purple-300 hover:text-white hover:bg-purple-900/60 shadow-[0_0_12px_rgba(168,85,247,0.3)] flex items-center gap-1.5 text-xs font-bold transition-all cursor-pointer"
-              >
-                <Crosshair className="w-4 h-4 text-purple-400 animate-pulse" />
-                <span className="hidden sm:inline">مجهر سينمائي (Zoom-in)</span>
-              </button>
-            )}
-
             {/* Close Button */}
             <button
               id="modal-close-btn"
@@ -201,7 +197,7 @@ export const DiseaseModal: React.FC<DiseaseModalProps> = ({
             onClick={() => handleTabChange('mechanism')}
             className={`px-3.5 py-2 rounded-xl transition-all whitespace-nowrap flex items-center gap-1.5 ${
               activeTab === 'mechanism'
-                ? 'bg-cyan-500 text-slate-950 shadow-[0_0_12px_rgba(6,182,212,0.4)]'
+                ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black shadow-[0_0_15px_rgba(249,115,22,0.4)]'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
             }`}
           >
@@ -214,7 +210,7 @@ export const DiseaseModal: React.FC<DiseaseModalProps> = ({
             onClick={() => handleTabChange('causes')}
             className={`px-3.5 py-2 rounded-xl transition-all whitespace-nowrap flex items-center gap-1.5 ${
               activeTab === 'causes'
-                ? 'bg-cyan-500 text-slate-950 shadow-[0_0_12px_rgba(6,182,212,0.4)]'
+                ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black shadow-[0_0_15px_rgba(249,115,22,0.4)]'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
             }`}
           >
@@ -227,7 +223,7 @@ export const DiseaseModal: React.FC<DiseaseModalProps> = ({
             onClick={() => handleTabChange('symptoms')}
             className={`px-3.5 py-2 rounded-xl transition-all whitespace-nowrap flex items-center gap-1.5 ${
               activeTab === 'symptoms'
-                ? 'bg-cyan-500 text-slate-950 shadow-[0_0_12px_rgba(6,182,212,0.4)]'
+                ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black shadow-[0_0_15px_rgba(249,115,22,0.4)]'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
             }`}
           >
@@ -240,7 +236,7 @@ export const DiseaseModal: React.FC<DiseaseModalProps> = ({
             onClick={() => handleTabChange('prevention')}
             className={`px-3.5 py-2 rounded-xl transition-all whitespace-nowrap flex items-center gap-1.5 ${
               activeTab === 'prevention'
-                ? 'bg-cyan-500 text-slate-950 shadow-[0_0_12px_rgba(6,182,212,0.4)]'
+                ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black shadow-[0_0_15px_rgba(249,115,22,0.4)]'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
             }`}
           >
@@ -251,10 +247,10 @@ export const DiseaseModal: React.FC<DiseaseModalProps> = ({
           <button
             id="tab-btn-simulator"
             onClick={() => handleTabChange('simulator')}
-            className={`px-3.5 py-2 rounded-xl transition-all whitespace-nowrap flex items-center gap-1.5 border border-cyan-500/30 ${
+            className={`px-3.5 py-2 rounded-xl transition-all whitespace-nowrap flex items-center gap-1.5 border border-orange-500/30 ${
               activeTab === 'simulator'
-                ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-black shadow-[0_0_15px_rgba(6,182,212,0.5)]'
-                : 'text-cyan-300 bg-cyan-950/40 hover:bg-cyan-900/50'
+                ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black shadow-[0_0_15px_rgba(249,115,22,0.5)]'
+                : 'text-orange-300 bg-orange-950/40 hover:bg-orange-900/50'
             }`}
           >
             <Sliders className="w-3.5 h-3.5" />
@@ -605,120 +601,7 @@ export const DiseaseModal: React.FC<DiseaseModalProps> = ({
                 </div>
               )}
 
-              {/* SIMULATOR 2: Blood Pressure Gauge */}
-              {disease.interactiveWidgetType === 'blood-pressure' && (
-                <div className="space-y-5">
-                  <p className="text-xs text-slate-300">
-                    اضبط قراءتي الضغط الانقباضي والانبساطي لمشاهدة تأثير القوة على الجدران الشريانية:
-                  </p>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-900/80 p-4 rounded-xl border border-slate-800">
-                    <div>
-                      <div className="flex justify-between text-xs mb-1 text-slate-400">
-                        <span>الضغط الانقباضي (Systolic):</span>
-                        <span className="font-mono text-rose-400 font-bold">{systolic} mmHg</span>
-                      </div>
-                      <input
-                        type="range"
-                        min="90"
-                        max="200"
-                        value={systolic}
-                        onChange={(e) => {
-                          sound.playHeartbeatThump();
-                          setSystolic(Number(e.target.value));
-                        }}
-                        className="w-full accent-rose-500 cursor-pointer"
-                      />
-                    </div>
-
-                    <div>
-                      <div className="flex justify-between text-xs mb-1 text-slate-400">
-                        <span>الضغط الانبساطي (Diastolic):</span>
-                        <span className="font-mono text-rose-400 font-bold">{diastolic} mmHg</span>
-                      </div>
-                      <input
-                        type="range"
-                        min="60"
-                        max="130"
-                        value={diastolic}
-                        onChange={(e) => {
-                          sound.playHeartbeatThump();
-                          setDiastolic(Number(e.target.value));
-                        }}
-                        className="w-full accent-rose-500 cursor-pointer"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Diagnosis Alert Box */}
-                  <div className={`p-4 rounded-xl border text-center ${
-                    systolic >= 140 || diastolic >= 90
-                      ? 'bg-rose-950/50 border-rose-500 text-rose-200'
-                      : systolic >= 130 || diastolic >= 85
-                        ? 'bg-amber-950/50 border-amber-500 text-amber-200'
-                        : 'bg-emerald-950/50 border-emerald-500 text-emerald-200'
-                  }`}>
-                    <div className="text-xs font-mono mb-1">تصنيف الحالة وفق منظمة الصحة العالمية:</div>
-                    <div className="text-lg font-black">
-                      {systolic >= 140 || diastolic >= 90
-                        ? 'ارتفاع ضغط دم سريري (إجهاد حاد للشرايين والقلب) ⚠️'
-                        : systolic >= 130 || diastolic >= 85
-                          ? 'ضغط دم مرتفع مبكر (يتطلب تخفيف الصوديوم والمشي)'
-                          : 'ضغط دم مثالي وصحي للغاية (الشرايين مرنة ومحمية) ✅'}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* SIMULATOR 3: RBC & Hemoglobin Density */}
-              {disease.interactiveWidgetType === 'rbc-density' && (
-                <div className="space-y-5">
-                  <p className="text-xs text-slate-300">
-                    حرّك مؤشر الهيموجلوبين لترى سعة نقل الأكسجين وتأثيرها المباشر على نشاط الدماغ والعضلات:
-                  </p>
-
-                  <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3">
-                    <div className="flex justify-between text-xs text-slate-400">
-                      <span>تركيز الهيموجلوبين بالدم:</span>
-                      <span className="font-mono text-emerald-400 font-bold text-sm">{hemoglobinLevel} g/dL</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="6"
-                      max="18"
-                      step="0.5"
-                      value={hemoglobinLevel}
-                      onChange={(e) => {
-                        sound.playClick(900 + Number(e.target.value) * 40);
-                        setHemoglobinLevel(Number(e.target.value));
-                      }}
-                      className="w-full accent-emerald-500 cursor-pointer"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 text-center">
-                    <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
-                      <div className="text-[11px] text-slate-400">كفاءة تشبع الأكسجين بالأنسجة</div>
-                      <div className={`text-xl font-mono font-black mt-1 ${hemoglobinLevel < 11 ? 'text-rose-400' : 'text-emerald-400'}`}>
-                        {Math.min(100, Math.round((hemoglobinLevel / 15) * 100))}%
-                      </div>
-                    </div>
-
-                    <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
-                      <div className="text-[11px] text-slate-400">المؤشر السريري</div>
-                      <div className="text-xs font-bold mt-2 text-slate-200">
-                        {hemoglobinLevel < 9 
-                          ? 'أنيميا حادة (إرهاق وضيق تنفس مستمر)' 
-                          : hemoglobinLevel < 12 
-                            ? 'أنيميا متوسطة (نقص مخزون الحديد)' 
-                            : 'أسطول كريات دم مكتمل وصحي'}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* SIMULATOR 4: BMI & Visceral Fat Risk */}
+              {/* SIMULATOR 2: BMI & Visceral Fat Risk */}
               {disease.interactiveWidgetType === 'bmi-visceral' && (
                 <div className="space-y-5">
                   <p className="text-xs text-slate-300">
