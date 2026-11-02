@@ -96,7 +96,7 @@ export const Hero: React.FC<HeroProps> = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.25 }}
-          className="w-full max-w-4xl bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border border-emerald-500/30 rounded-3xl p-5 sm:p-6 mb-10 shadow-[0_0_35px_rgba(16,185,129,0.12)] flex flex-col md:flex-row items-center justify-between gap-5 text-right"
+          className="w-full max-w-5xl bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border border-emerald-500/30 rounded-3xl p-5 sm:p-6 mb-10 shadow-[0_0_35px_rgba(16,185,129,0.12)] flex flex-col lg:flex-row items-center justify-between gap-5 text-right"
         >
           {/* School */}
           <div className="flex items-center gap-3">
@@ -109,32 +109,37 @@ export const Hero: React.FC<HeroProps> = ({
             </div>
           </div>
 
-          <div className="h-8 w-px bg-slate-800 hidden md:block" />
+          <div className="h-8 w-px bg-slate-800 hidden lg:block" />
 
           {/* Supervisors Teachers */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-1">
             <div className="w-12 h-12 rounded-2xl bg-emerald-950/90 border border-emerald-500/40 text-emerald-300 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(16,185,129,0.25)]">
               <GraduationCap className="w-6 h-6" />
             </div>
             <div>
-              <span className="text-[11px] text-slate-400 block font-medium">إشراف المعلمات الفاضلات:</span>
-              <span className="text-sm sm:text-base font-black text-emerald-300">
-                أ. مريم • أ. هيا • أ. بشاير
-              </span>
+              <span className="text-[11px] text-slate-400 block font-medium">إشراف:</span>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs sm:text-sm font-black text-emerald-300">
+                <span>معلمات العلوم</span>
+                <span className="text-emerald-600">•</span>
+                <span>معلمات المهارات الحياتية الأسرية</span>
+                <span className="text-emerald-600">•</span>
+                <span>المرشدة الصحية</span>
+              </div>
             </div>
           </div>
 
-          <div className="h-8 w-px bg-slate-800 hidden md:block" />
+          <div className="h-8 w-px bg-slate-800 hidden lg:block" />
 
-          {/* Admin Assistant & Team */}
+          {/* Design & Direction */}
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-amber-950/90 border border-amber-500/40 text-amber-300 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(245,158,11,0.25)]">
-              <ShieldCheck className="w-6 h-6" />
+              <Sparkles className="w-6 h-6" />
             </div>
             <div>
-              <span className="text-[11px] text-slate-400 block font-medium">المساعد الإداري:</span>
-              <span className="text-sm sm:text-base font-black text-amber-300">أ. جواهر</span>
-              <span className="text-[10px] text-emerald-400 block font-bold mt-0.5">تصميم وإخراج: فريق إمـَـا</span>
+              <span className="text-[11px] text-slate-400 block font-medium">تصميم وإخراج:</span>
+              <span className="text-base font-black text-amber-300 bg-amber-500/10 px-3 py-0.5 rounded-xl border border-amber-500/30 inline-block mt-0.5 shadow-[0_0_12px_rgba(245,158,11,0.2)]">
+                ميِم
+              </span>
             </div>
           </div>
         </motion.div>

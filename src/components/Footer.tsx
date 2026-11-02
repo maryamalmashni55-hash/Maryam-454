@@ -86,19 +86,21 @@ export const Footer: React.FC = () => {
             </div>
             <div>
               <span className="text-xs text-slate-400 block font-medium">المتوسطة الأولى بالراكة • مبادرة صحتي مسؤوليتي</span>
-              <h4 className="text-lg font-black text-white mt-0.5">
-                إشراف المعلمات الفاضلات: <span className="text-emerald-300">أ. مريم • أ. هيا • أ. بشاير</span>
-              </h4>
-              <p className="text-xs text-amber-300 font-bold mt-1">
-                المساعد الإداري: أ. جواهر
-              </p>
+              <div className="flex flex-wrap items-center gap-2 mt-1">
+                <span className="text-sm text-slate-300 font-bold">إشراف:</span>
+                <span className="text-sm sm:text-base font-black text-emerald-300">
+                  معلمات العلوم • معلمات المهارات الحياتية الأسرية • المرشدة الصحية
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <div className="text-left">
-              <span className="text-[11px] text-slate-400 block">تصميم وتنفيذ وإخراج:</span>
-              <span className="text-sm font-black text-emerald-300">فريق إمـَـا</span>
+              <span className="text-[11px] text-slate-400 block font-medium">تصميم وإخراج:</span>
+              <span className="text-base font-black text-amber-300 bg-amber-500/10 px-3 py-0.5 rounded-xl border border-amber-500/30 inline-block shadow-[0_0_12px_rgba(245,158,11,0.2)]">
+                ميِم
+              </span>
             </div>
             <button
               onClick={scrollToTop}
@@ -115,8 +117,10 @@ export const Footer: React.FC = () => {
           <p>
             جميع الحقوق محفوظة © {new Date().getFullYear()} — مبادرة صحتي مسؤوليتي | المتوسطة الأولى بالراكة.
           </p>
-          <div className="flex items-center gap-2">
-            <span>إشراف: أ. مريم • أ. هيا • أ. بشاير | المساعد الإداري: أ. جواهر</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span>إشراف: معلمات العلوم • معلمات المهارات الحياتية الأسرية • المرشدة الصحية</span>
+            <span className="text-slate-600">•</span>
+            <span>تصميم وإخراج: <strong className="text-amber-300 font-bold">ميِم</strong></span>
           </div>
         </div>
 

@@ -53,25 +53,21 @@ export const Navbar: React.FC<NavbarProps> = ({
     <>
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#060913]/95 backdrop-blur-xl border-b border-slate-800/80 transition-all duration-300">
         
-        {/* Top Slim Honor Banner: School, Teachers & Administrative Assistant */}
+        {/* Top Slim Honor Banner: School, Supervision & Design */}
         <div className="bg-[#02050e] border-b border-emerald-950/40 px-3 sm:px-4 py-1 text-[11px] text-slate-400 text-center flex flex-wrap items-center justify-between gap-x-3 gap-y-1 select-none">
-          <div className="flex items-center gap-1.5 text-emerald-300 mx-auto sm:mx-0">
+          <div className="flex flex-wrap items-center gap-1.5 text-emerald-300 mx-auto sm:mx-0">
             <School className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
             <strong className="text-white font-bold">المتوسطة الأولى بالراكة</strong>
             <span className="text-slate-600">•</span>
             <GraduationCap className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-            <span>إشراف المعلمات:</span>
-            <strong className="text-emerald-200 font-bold">أ. مريم • أ. هيا • أ. بشاير</strong>
+            <span className="text-slate-400">إشراف:</span>
+            <strong className="text-emerald-200 font-bold">معلمات العلوم • معلمات المهارات الحياتية الأسرية • المرشدة الصحية</strong>
           </div>
 
           <div className="flex items-center gap-2 mx-auto sm:mx-0 text-amber-300 font-medium">
-            <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-            <span>المساعد الإداري:</span>
-            <strong className="text-amber-200 font-bold">أ. جواهر</strong>
-            <span className="text-slate-600">•</span>
             <span className="text-slate-400">تصميم وإخراج:</span>
-            <strong className="text-emerald-300 font-bold bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-500/30 text-[10px]">
-              فريق إمـَـا
+            <strong className="text-amber-300 font-bold bg-amber-950/60 px-2.5 py-0.5 rounded-full border border-amber-500/30 text-[10px] shadow-[0_0_8px_rgba(245,158,11,0.2)]">
+              ميِم
             </strong>
           </div>
         </div>

@@ -534,40 +534,40 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onEnter }) => {
                   </div>
                 </div>
 
-                {/* Left Card: Supervisors (إشراف المعلمات: مريم، هيا، بشاير) */}
+                {/* Left Card: Supervisors */}
                 <div className="p-5 sm:p-6 rounded-3xl bg-slate-900/80 border border-emerald-500/40 backdrop-blur-xl shadow-[0_0_30px_rgba(16,185,129,0.15)] flex items-center gap-4 text-right">
                   <div className="w-14 h-14 rounded-2xl bg-emerald-950/90 border border-emerald-500/50 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
                     <GraduationCap className="w-7 h-7 text-emerald-300" />
                   </div>
                   <div>
-                    <span className="text-[11px] font-bold text-emerald-400 block mb-0.5">إشراف المعلمات الفاضلات:</span>
-                    <h3 className="text-base sm:text-lg font-black text-emerald-300">
-                      أ. مريم • أ. هيا • أ. بشاير
+                    <span className="text-[11px] font-bold text-emerald-400 block mb-0.5">إشراف:</span>
+                    <h3 className="text-sm sm:text-base font-black text-emerald-300 leading-relaxed">
+                      معلمات العلوم • معلمات المهارات الحياتية الأسرية • المرشدة الصحية
                     </h3>
                     <p className="text-xs text-slate-400 mt-1 leading-snug">
-                      عطاء تربوي متميز لدعم صحة الطالبات ونشر الثقافة الوقائية.
+                      عطاء تربوي متميز لترسيخ الثقافة الصحية والوقائية لدى الطالبات.
                     </p>
                   </div>
                 </div>
 
               </div>
 
-              {/* Bottom Combined Bar: Administrative Assistant (مساعد الإداري جواهر) + Execution Team */}
+              {/* Bottom Combined Bar: Design & Production (ميِم) + High School Spirit */}
               <div className="w-full max-w-4xl p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border border-slate-800 shadow-xl flex flex-wrap items-center justify-between gap-3 text-right text-xs mb-8">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-amber-950/80 border border-amber-500/40 text-amber-400 flex items-center justify-center shrink-0">
-                    <ShieldCheck className="w-4 h-4" />
+                  <div className="w-8 h-8 rounded-xl bg-cyan-950/80 border border-cyan-500/40 text-cyan-400 flex items-center justify-center shrink-0">
+                    <Sparkles className="w-4 h-4" />
                   </div>
-                  <div>
-                    <span className="text-[11px] text-slate-400 block font-medium">المساعد الإداري:</span>
-                    <span className="text-sm font-black text-amber-300">أ. جواهر</span>
+                  <div className="text-slate-300">
+                    <span className="text-[11px] text-slate-400 block font-medium">مبادرة مدرسية تفاعلية:</span>
+                    <span className="text-xs sm:text-sm font-bold text-white">صحتي مسؤوليتي — نحو جيل صحي واعٍ</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-slate-400 font-medium">تصميم وتنفيذ وإخراج:</span>
-                  <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-black">
-                    فريق إمـَـا
+                  <span className="text-slate-400 font-medium">تصميم وإخراج:</span>
+                  <span className="px-3.5 py-1 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 font-black text-sm shadow-[0_0_12px_rgba(245,158,11,0.2)]">
+                    ميِم
                   </span>
                 </div>
               </div>
