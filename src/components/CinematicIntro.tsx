@@ -542,7 +542,7 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onEnter }) => {
                   <div>
                     <span className="text-[11px] font-bold text-emerald-400 block mb-0.5">إشراف:</span>
                     <h3 className="text-sm sm:text-base font-black text-emerald-300 leading-relaxed">
-                      معلمات العلوم • معلمات المهارات الحياتية الأسرية • المرشدة الصحية
+                      معلمات العلوم • معلمات المهارات الحياتية والأسرية • المرشدة الصحية
                     </h3>
                     <p className="text-xs text-slate-400 mt-1 leading-snug">
                       عطاء تربوي متميز لترسيخ الثقافة الصحية والوقائية لدى الطالبات.

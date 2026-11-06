@@ -61,7 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="text-slate-600">•</span>
             <GraduationCap className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
             <span className="text-slate-400">إشراف:</span>
-            <strong className="text-emerald-200 font-bold">معلمات العلوم • معلمات المهارات الحياتية الأسرية • المرشدة الصحية</strong>
+            <strong className="text-emerald-200 font-bold">معلمات العلوم • معلمات المهارات الحياتية والأسرية • المرشدة الصحية</strong>
           </div>
 
           <div className="flex items-center gap-2 mx-auto sm:mx-0 text-amber-300 font-medium">

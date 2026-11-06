@@ -89,7 +89,7 @@ export const Footer: React.FC = () => {
               <div className="flex flex-wrap items-center gap-2 mt-1">
                 <span className="text-sm text-slate-300 font-bold">إشراف:</span>
                 <span className="text-sm sm:text-base font-black text-emerald-300">
-                  معلمات العلوم • معلمات المهارات الحياتية الأسرية • المرشدة الصحية
+                  معلمات العلوم • معلمات المهارات الحياتية والأسرية • المرشدة الصحية
                 </span>
               </div>
             </div>
@@ -118,7 +118,7 @@ export const Footer: React.FC = () => {
             جميع الحقوق محفوظة © {new Date().getFullYear()} — مبادرة صحتي مسؤوليتي | المتوسطة الأولى بالراكة.
           </p>
           <div className="flex flex-wrap items-center gap-2">
-            <span>إشراف: معلمات العلوم • معلمات المهارات الحياتية الأسرية • المرشدة الصحية</span>
+            <span>إشراف: معلمات العلوم • معلمات المهارات الحياتية والأسرية • المرشدة الصحية</span>
             <span className="text-slate-600">•</span>
             <span>تصميم وإخراج: <strong className="text-amber-300 font-bold">ميِم</strong></span>
           </div>

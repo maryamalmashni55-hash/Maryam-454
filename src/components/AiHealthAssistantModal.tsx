@@ -48,7 +48,7 @@ export const AiHealthAssistantModal: React.FC<AiHealthAssistantModalProps> = ({
 
 🌟 **إشراف:**
 • **معلمات العلوم**
-• **معلمات المهارات الحياتية الأسرية**
+• **معلمات المهارات الحياتية والأسرية**
 • **المرشدة الصحية**
 
 🎨 **تصميم وإخراج:**
@@ -169,7 +169,7 @@ export const AiHealthAssistantModal: React.FC<AiHealthAssistantModalProps> = ({
 2. تقليل السكريات والأطعمة المكررة والصوديوم.
 3. إجراء الفحوصات الدورية ومراقبة مؤشرات الدم.
 
-⭐ هذا العمل المميز تم بإشراف: **معلمات العلوم • معلمات المهارات الحياتية الأسرية • المرشدة الصحية**، وتصميم وإخراج: **ميِم**.`,
+⭐ هذا العمل المميز تم بإشراف: **معلمات العلوم • معلمات المهارات الحياتية والأسرية • المرشدة الصحية**، وتصميم وإخراج: **ميِم**.`,
         time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
       };
 
@@ -240,7 +240,7 @@ export const AiHealthAssistantModal: React.FC<AiHealthAssistantModalProps> = ({
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-slate-300 mt-0.5">
                     <span className="flex items-center gap-1 text-emerald-300">
                       <GraduationCap className="w-3 h-3 text-emerald-400" />
-                      <span>إشراف: معلمات العلوم • معلمات المهارات الحياتية الأسرية • المرشدة الصحية</span>
+                      <span>إشراف: معلمات العلوم • معلمات المهارات الحياتية والأسرية • المرشدة الصحية</span>
                     </span>
                     <span className="text-slate-600 hidden sm:inline">•</span>
                     <span className="flex items-center gap-1 text-amber-300">
@@ -401,7 +401,7 @@ export const AiHealthAssistantModal: React.FC<AiHealthAssistantModalProps> = ({
               <div className="flex flex-wrap items-center justify-between gap-2 mt-2 pt-2 border-t border-slate-900 text-[10px] text-slate-500">
                 <span className="flex items-center gap-1">
                   <Info className="w-3 h-3 text-cyan-400 shrink-0" />
-                  <span>معلومات تثقيفية للوقاية • إشراف: معلمات العلوم، معلمات المهارات الحياتية الأسرية، المرشدة الصحية • تصميم وإخراج: ميِم</span>
+                  <span>معلومات تثقيفية للوقاية • إشراف: معلمات العلوم، معلمات المهارات الحياتية والأسرية، المرشدة الصحية • تصميم وإخراج: ميِم</span>
                 </span>
                 <span className="font-mono text-cyan-400/80">POWERED BY GEMINI 3.8</span>
               </div>

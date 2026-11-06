@@ -121,7 +121,7 @@ export const Hero: React.FC<HeroProps> = ({
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs sm:text-sm font-black text-emerald-300">
                 <span>معلمات العلوم</span>
                 <span className="text-emerald-600">•</span>
-                <span>معلمات المهارات الحياتية الأسرية</span>
+                <span>معلمات المهارات الحياتية والأسرية</span>
                 <span className="text-emerald-600">•</span>
                 <span>المرشدة الصحية</span>
               </div>
